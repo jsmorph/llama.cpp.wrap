@@ -13,19 +13,18 @@ Minimal HTTP wrapper for llama.cpp inference.
 
 Requires `g++`, `make`, and llama.cpp.
 
-You must build llama.cpp as a shared library (`libllama.so`). Clone https://github.com/ggerganov/llama.cpp, then run:
-
-```sh
-cd ../llama.cpp
-cmake -B build -DLLAMA_BUILD_SHARED_LIB=on .
-cmake --build build --config Release
-```
-
-Ensure `libllama.so` is present in `../llama.cpp/build/bin` before building this project.
+This project now supports static linking with llama.cpp. The Makefile will automatically build the static libraries if they don't exist.
 
 ```sh
 make
 ```
+
+The build process:
+1. Compiles the C++ wrapper and server code
+2. Builds the llama.cpp static libraries if needed
+3. Links everything together into statically-linked executables
+
+No need to set `LD_LIBRARY_PATH` anymore - the executables include all necessary code.
 
 ## Run
 

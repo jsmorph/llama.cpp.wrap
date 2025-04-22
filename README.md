@@ -88,3 +88,49 @@ make test
 ```
 
 This runs three example POST requests to `/complete` and saves the outputs as `test1.json`, `test2.json`, and `test3.json`.
+
+## C Example: Command-Line JSON Completion
+
+A minimal C program, `example.c`, is provided to demonstrate direct use of the C API for JSON-based completion.
+
+### Build
+
+```sh
+make example
+```
+
+### Usage
+
+```sh
+./example <model_path> <context_size>
+```
+
+- `<model_path>`: Path to a GGUF model file (e.g., `models/tinyllama.gguf`)
+- `<context_size>`: Context window size (e.g., 128)
+
+The program reads lines of JSON from standard input. Each line must be a valid completion request object:
+
+```json
+{"prompt":"Hello, world!","max_tokens":5,"temperature":0.7,"top_p":0.8,"top_k":30,"seed":42,"include_logits":false}
+```
+
+For each line, the program:
+1. Parses the JSON as a completion request.
+2. Runs the model to generate a response.
+3. Serializes the response as JSON and writes it to standard output.
+
+### Example
+
+You can test the example program with:
+
+```sh
+make test-example
+```
+
+This will run `example` with a sample request and save the output to `test-example.json`.
+
+Sample output:
+
+```json
+{"text":"\nDear Sir/","tokens":null}
+```

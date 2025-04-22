@@ -144,3 +144,57 @@ void free_llama(struct llama_state* state) {
 }
 
 } // extern "C"
+
+extern "C" {
+
+// Parse completion_params from JSON string (returns 0 on success, nonzero on error)
+// Allocates out_params->prompt (caller must free)
+int parse_completion_params_json(const char* json_str, struct completion_params* out_params) {
+    if (!json_str || !out_params) return 1;
+    try {
+        json j = json::parse(json_str);
+
+        std::string prompt_str = j.at("prompt").get<std::string>();
+        char* prompt_cstr = (char*)malloc(prompt_str.size() + 1);
+        if (!prompt_cstr) return 2;
+        std::memcpy(prompt_cstr, prompt_str.c_str(), prompt_str.size() + 1);
+        out_params->prompt = prompt_cstr;
+
+        out_params->max_tokens = j.at("max_tokens").get<int>();
+        out_params->temperature = j.at("temperature").get<float>();
+        out_params->top_p = j.at("top_p").get<float>();
+        out_params->top_k = j.at("top_k").get<int>();
+        out_params->seed = j.at("seed").get<int>();
+        out_params->include_logits = j.at("include_logits").get<bool>();
+        return 0;
+    } catch (...) {
+        return 3;
+    }
+}
+
+// Serialize completion_result to JSON string (returns malloc'd string, caller must free)
+char* serialize_completion_result_json(const struct completion_result* result) {
+    if (!result) return nullptr;
+    try {
+        json j;
+        j["text"] = result->text ? std::string(result->text) : "";
+        if (result->tokens_json) {
+            try {
+                j["tokens"] = json::parse(result->tokens_json);
+            } catch (...) {
+                j["tokens"] = nullptr;
+            }
+        } else {
+            j["tokens"] = nullptr;
+        }
+        std::string out = j.dump();
+        char* out_cstr = (char*)malloc(out.size() + 1);
+        if (!out_cstr) return nullptr;
+        std::memcpy(out_cstr, out.c_str(), out.size() + 1);
+        return out_cstr;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+} // extern "C"

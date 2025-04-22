@@ -2,6 +2,7 @@
 *.o
 *.so
 *.a
+example
 llama_server
 /models/
 test*.json

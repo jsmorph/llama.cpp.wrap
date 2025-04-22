@@ -37,6 +37,9 @@ int complete(struct llama_state* state, const struct completion_params* params, 
 // Free a llama_state
 void free_llama(struct llama_state* state);
 
+int parse_completion_params_json(const char* json_str, struct completion_params* out_params);
+char* serialize_completion_result_json(const struct completion_result* result);
+
 #ifdef __cplusplus
 }
 #endif

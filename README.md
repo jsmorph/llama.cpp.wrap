@@ -6,8 +6,20 @@ Minimal HTTP wrapper for llama.cpp inference.
 
 ## Overview
 
-- `wrap.cpp`: C++ wrapper for llama.cpp. Loads a model, runs completions, and manages resources.
-- `server.cpp`: HTTP server exposing a `/complete` endpoint for text generation and a `/health` endpoint.
+This project provides a lightweight, efficient HTTP wrapper around llama.cpp, enabling easy access to large language model inference capabilities through a simple API. The wrapper is designed to be minimal yet functional, focusing on performance and ease of integration.
+
+Key components:
+
+- `wrap.cpp`: C++ wrapper for llama.cpp. Loads a model, runs completions, and manages resources. Provides a clean C interface that abstracts away the complexity of direct llama.cpp usage.
+- `server.cpp`: HTTP server exposing a `/complete` endpoint for text generation and a `/health` endpoint. Built with the lightweight httplib library for minimal dependencies.
+- `example.c`: Demonstrates direct usage of the wrapper API through a command-line JSON interface.
+
+Architecture:
+- The wrapper layer (`wrap.cpp`/`wrap.h`) handles all direct interaction with llama.cpp, including model loading, token generation, and resource management
+- The server layer (`server.cpp`) provides HTTP access to the wrapper functionality, handling request parsing, response formatting, and error handling
+- Both components are designed to be statically linked for easy deployment without dependency issues
+
+This design allows for flexible usage patterns - either through the HTTP API for networked applications or direct C API integration for embedded use cases.
 
 ## Build
 

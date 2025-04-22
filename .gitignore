@@ -1,5 +1,8 @@
 *~
 *.o
+*.so
 *.a
 llama_server
 /models/
+test*.json
+/scratch/

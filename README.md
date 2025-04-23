@@ -38,6 +38,28 @@ The build process:
 
 No need to set `LD_LIBRARY_PATH` anymore - the executables include all necessary code.
 
+### Downloading GGUF Models
+
+This project requires a GGUF-format language model file (e.g., `models/tinyllama.gguf`). You can download compatible models from [Hugging Face](https://huggingface.co/models?library=gguf) or other model repositories. Models from repositories like "TheBloke" often provide direct download links.
+
+**To download a model:**
+
+1. Find a suitable GGUF model on Hugging Face (e.g., [TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF](https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF)).
+2. Download the desired `.gguf` file. You can often use `wget` for direct download from repositories like TheBloke's.
+3. Place the downloaded file in the `models/` directory and rename it to `tinyllama.gguf` (or update the server/model path as needed).
+
+**Example using `wget`:**
+
+```sh
+# Create the models directory if it doesn't exist
+mkdir -p models
+
+# Download the TinyLlama Q4_K_M model from TheBloke
+wget -O models/tinyllama.gguf https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf
+```
+
+Make sure the model filename and path match what is expected by the server or example programs.
+
 ## Run
 
 ```sh

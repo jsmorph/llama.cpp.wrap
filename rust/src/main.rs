@@ -1,5 +1,5 @@
 use std::io::{self, BufRead};
-use llama_wrapper::complete;
+use llama_wrapper::LlamaModel;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
@@ -14,6 +14,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "Invalid context size"
     })?;
 
+    let model = LlamaModel::new(model_path, n_ctx)
+        .map_err(|e| {
+            eprintln!("Failed to initialize model: {}", e);
+            "Failed to initialize model"
+        })?;
+
     let stdin = io::stdin();
     let mut lines = stdin.lock().lines();
 
@@ -23,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             continue;
         }
 
-        match complete(&line, model_path, n_ctx) {
+        match model.complete(&line) {
             Ok(resp_json) => println!("{}", resp_json),
             Err(e) => eprintln!("Error: {}", e),
         }

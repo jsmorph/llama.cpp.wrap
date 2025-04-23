@@ -65,7 +65,11 @@ pub struct LlamaModel {
     state: *mut LlamaState,
 }
 
+unsafe impl Send for LlamaModel {}
+unsafe impl Sync for LlamaModel {}
+
 impl LlamaModel {
+    /// Create a new model instance. The model will be loaded and ready for completions.
     pub fn new(model_path: &str, n_ctx: i32) -> Result<Self, LlamaError> {
         if n_ctx <= 0 {
             return Err(LlamaError::InvalidContextSize);
@@ -79,6 +83,7 @@ impl LlamaModel {
         }
     }
 
+    /// Get a completion for the given request JSON. Returns the response JSON.
     pub fn complete(&self, request_json: &str) -> Result<String, LlamaError> {
         let json_str = CString::new(request_json).map_err(|e| LlamaError::Other(e.to_string()))?;
         let mut params = CompletionParams {
@@ -147,11 +152,4 @@ impl Drop for LlamaModel {
             free_llama(self.state);
         }
     }
-}
-
-/// Complete a request given a model path, context size, and request JSON.
-/// Returns the response JSON or an error.
-pub fn complete(request_json: &str, model_path: &str, n_ctx: i32) -> Result<String, LlamaError> {
-    let model = LlamaModel::new(model_path, n_ctx)?;
-    model.complete(request_json)
 }

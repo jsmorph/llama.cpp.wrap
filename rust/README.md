@@ -60,9 +60,15 @@ llama_wrapper = { path = "../llama.cpp.wrap/rust" }
 ### Example
 
 ```rust
-use llama_wrapper::complete;
+use llama_wrapper::{LlamaModel, LlamaError};
 
-fn main() {
+fn main() -> Result<(), LlamaError> {
+    // Set up the model once
+    let model_path = "../models/llama-7b.gguf";
+    let n_ctx = 512;
+    let model = LlamaModel::new(model_path, n_ctx)?;
+
+    // You can now repeatedly get completions for this model
     let request_json = r#"{
         "prompt": "What is the capital of France?",
         "max_tokens": 16,
@@ -73,21 +79,19 @@ fn main() {
         "include_logits": false
     }"#;
 
-    let model_path = "../models/llama-7b.gguf";
-    let n_ctx = 512;
+    let response_json = model.complete(request_json)?;
+    println!("Response: {}", response_json);
 
-    match complete(request_json, model_path, n_ctx) {
-        Ok(response_json) => println!("Response: {}", response_json),
-        Err(e) => eprintln!("Error: {}", e),
-    }
+    // ...call model.complete(...) as many times as needed
+
+    Ok(())
 }
 ```
 
-- `request_json`: A string containing the JSON request (see above for format).
-- `model_path`: Path to your GGUF model file.
-- `n_ctx`: Context size (integer).
+- `LlamaModel::new(model_path, n_ctx)`: Loads the model and prepares it for completions.
+- `model.complete(request_json)`: Gets a completion for the given JSON request string.
 
-The `complete` function returns a `Result<String, LlamaError>`, where the `String` is the response JSON.
+The `complete` method returns a `Result<String, LlamaError>`, where the `String` is the response JSON.
 
 ### Requirements
 

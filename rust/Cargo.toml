@@ -3,5 +3,10 @@ name = "llama_wrapper"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "llama_wrapper"
+path = "src/lib.rs"
+crate-type = ["rlib"]
+
 [dependencies]
 libc = "0.2"

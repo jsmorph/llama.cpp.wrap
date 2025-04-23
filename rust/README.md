@@ -48,6 +48,54 @@ Example input:
 {"prompt": "What is the capital of France?", "max_tokens": 100, "temperature": 0.7, "top_p": 0.9, "top_k": 40, "seed": 42, "include_logits": false}
 ```
 
+## Using as a Library
+
+You can use the high-level API from your own Rust code by adding this crate as a dependency. If using locally, add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+llama_wrapper = { path = "../llama.cpp.wrap/rust" }
+```
+
+### Example
+
+```rust
+use llama_wrapper::complete;
+
+fn main() {
+    let request_json = r#"{
+        "prompt": "What is the capital of France?",
+        "max_tokens": 16,
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "top_k": 40,
+        "seed": 42,
+        "include_logits": false
+    }"#;
+
+    let model_path = "../models/llama-7b.gguf";
+    let n_ctx = 512;
+
+    match complete(request_json, model_path, n_ctx) {
+        Ok(response_json) => println!("Response: {}", response_json),
+        Err(e) => eprintln!("Error: {}", e),
+    }
+}
+```
+
+- `request_json`: A string containing the JSON request (see above for format).
+- `model_path`: Path to your GGUF model file.
+- `n_ctx`: Context size (integer).
+
+The `complete` function returns a `Result<String, LlamaError>`, where the `String` is the response JSON.
+
+### Requirements
+
+- The llama.cpp C library and wrapper must be built and available for linking.
+- The model file must exist at the specified path.
+- This crate must be built with the same configuration as the C library.
+
+
 ## Implementation Details
 
 This Rust implementation:
